@@ -1,0 +1,38 @@
+
+/Configuring the LAN–facing Ethernet interface:
+configure
+show interfaces ethernet eth2
+
+set interfaces ethernet eth2 address 192.168.10.1/24
+commit
+save
+
+//Configuring DHCP Server:
+set service dhcp-server shared-network-name giacomo subnet 192.168.10.0/24
+edit service dhcp-server shared-network-name giacomo subnet 192.168.10.0/24
+set start 192.168.10.10 stop 192.168.10.250
+set default-router 192.168.10.1
+set dns-server 8.8.8.8
+commit
+save
+
+show service dhcp-server
+
+
+//Configurar the eth1:
+configure
+set interfaces ethernet eth1 address dhcp
+commit
+save
+
+
+//config nat
+set set nat source rule 1 outbound-interface eth1
+set nat source rule 1 source address 192.168.10.0/24
+set nat source rule 1 translation address masquerade
+
+
+//DNS forwarding(optional)
+set service dns forwarding listen-on eth2
+set service dns forwarding name-server 8.8.8.8
+commit
